@@ -7,8 +7,8 @@ Browse and read ero/hentai manga from 3 of some biggest hentai websites in an ap
 
 ## Content sources:
 
-- [Hentai Cafe (deprecated)](https://hentai.cafe)
-- [Hentai Nexus (deprecated)](https://hentainexus.com)
+- [Hentai Cafe - R.I.P](https://hentai.cafe)
+- [Hentai Nexus - R.I.P](https://hentainexus.com)
 - [NHentai](https://nhentai.net)
-- [Tsumino - coming soon](https://www.tsumino.com/)
+- [Tsumino - R.I.P](https://www.tsumino.com/)
 
