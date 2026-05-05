@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pinecone Coffee</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#111f10;
+  --bark:#1a3318;
+  --gold:#c9a84c;
+  --gold2:#e8c96a;
+  --moss:#2d4a1e;
+  --moss2:#4a7a35;
+  --cream:#f5ead8;
+  --cream2:#ede0c4;
+  --fog:#d4c8b0;
+  --mush:#8b5e3c;
+  --sky:#1c2a3a;
+  --text:#1e3320;
+  --text2:#2d4a1e;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Lora',Georgia,serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* PAGES */
+.page{display:none;min-height:100vh;flex-direction:column}
+.page.active{display:flex}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  background:rgba(26,18,8,0.96);
+  border-bottom:1px solid rgba(201,168,76,0.2);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1rem;height:60px;
+  backdrop-filter:blur(10px);
+  gap:.25rem;
+}
+.nav-brand{
+  font-family:'Cinzel',serif;font-size:clamp(.65rem,.9rem + 1vw,.95rem);
+  color:var(--gold2);cursor:pointer;letter-spacing:.04em;
+  transition:color .2s;white-space:nowrap;flex-shrink:0;
+}
+.nav-brand:hover{color:var(--cream)}
+.nav-links{display:flex;list-style:none;gap:0;flex-shrink:0}
+.nav-links button{
+  background:none;border:none;color:var(--fog);
+  font-family:'Lora',serif;
+  font-size:clamp(.55rem,.65rem + .5vw,.78rem);
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:.45rem clamp(.35rem,.6rem + .5vw,.9rem);
+  cursor:pointer;transition:color .2s;
+  position:relative;white-space:nowrap;
+}
+.nav-links button::after{
+  content:'';position:absolute;bottom:-1px;left:50%;right:50%;
+  height:1px;background:var(--gold);transition:left .25s,right .25s;
+}
+.nav-links button:hover{color:var(--cream)}
+.nav-links button:hover::after,.nav-links button.act::after{left:.35rem;right:.35rem}
+.nav-links button.act{color:var(--gold2)}
+
+/* SHARED */
+.eyebrow{font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.heading{font-family:'Cinzel',serif;color:var(--bark);line-height:1.2;margin-bottom:1.2rem}
+.divider{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold))}
+.divider::after{background:linear-gradient(to left,transparent,var(--gold))}
+.divider-icon{color:var(--gold);font-size:.85rem}
+.btn{
+  display:inline-block;font-family:'Lora',serif;
+  font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;
+  padding:.85rem 2.5rem;cursor:pointer;transition:all .3s;
+  background:transparent;
+}
+.btn-gold{border:1px solid var(--gold);color:var(--gold2)}
+.btn-gold:hover{background:rgba(201,168,76,.12);border-color:var(--gold2);color:var(--cream2)}
+.btn-dark{border:1px solid rgba(201,168,76,.4);color:var(--gold2)}
+.btn-dark:hover{background:rgba(201,168,76,.1);border-color:var(--gold);color:var(--gold2)}
+.site-footer{
+  background:var(--ink);border-top:1px solid rgba(201,168,76,.15);
+  padding:2.5rem 2rem;text-align:center;margin-top:auto;
+}
+.footer-brand{font-family:'Cinzel',serif;font-size:.95rem;color:var(--gold);letter-spacing:.1em;margin-bottom:.5rem}
+.site-footer p{font-size:.72rem;letter-spacing:.16em;color:rgba(201,168,76,.4)}
+
+/* HOME */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:2rem 2rem 4rem;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background-image:url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1800&q=80');
+  background-size:cover;background-position:center 35%;
+  filter:brightness(.28) saturate(.55);
+  animation:zoomBg 25s ease-in-out infinite alternate;
+}
+@keyframes zoomBg{from{transform:scale(1.03)}to{transform:scale(1.11)}}
+.hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,transparent 20%,rgba(26,18,8,.6) 80%),
+  linear-gradient(to bottom,rgba(26,18,8,.55) 0%,transparent 25%,transparent 65%,rgba(26,18,8,.9) 100%);
+}
+/* firefly particles */
+.fireflies{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ff{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  background:rgba(232,201,106,.75);
+  animation:ffloat var(--dur,8s) var(--del,0s) ease-in-out infinite;
+}
+@keyframes ffloat{
+  0%{opacity:0;transform:translate(0,0) scale(.5)}
+  25%{opacity:.9;transform:translate(var(--dx,20px),var(--dy,-30px)) scale(1.2)}
+  50%{opacity:.4;transform:translate(calc(var(--dx,20px)*1.5),calc(var(--dy,-30px)*1.3)) scale(.8)}
+  75%{opacity:.8;transform:translate(calc(var(--dx,20px)*.8),calc(var(--dy,-30px)*1.8)) scale(1.1)}
+  100%{opacity:0;transform:translate(0,-80px) scale(.4)}
+}
+.hero-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.logo-wrap{
+  width:clamp(140px,40vw,210px);height:clamp(140px,40vw,210px);position:relative;
+  margin-bottom:1.5rem;
+  animation:floatLogo 7s ease-in-out infinite;
+}
+@keyframes floatLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.logo-ring{
+  position:absolute;inset:-16px;border-radius:50%;
+  border:1px solid rgba(201,168,76,.22);
+  animation:spinRing 35s linear infinite;
+}
+.logo-ring::before,.logo-ring::after{
+  content:'âœ¦';position:absolute;left:50%;transform:translateX(-50%);
+  color:rgba(201,168,76,.5);font-size:12px;
+}
+.logo-ring::before{top:-8px}
+.logo-ring::after{bottom:-8px;transform:translateX(-50%) rotate(180deg)}
+.logo-ring2{
+  position:absolute;inset:-30px;border-radius:50%;
+  border:1px solid rgba(201,168,76,.08);
+  animation:spinRing 60s linear infinite reverse;
+}
+@keyframes spinRing{to{transform:rotate(360deg)}}
+.logo-img{
+  width:clamp(140px,40vw,210px);height:clamp(140px,40vw,210px);border-radius:50%;
+  object-fit:cover;object-position:center;display:block;
+  filter:drop-shadow(0 0 35px rgba(201,168,76,.35));
+}
+.hero-eyebrow{font-size:.7rem;letter-spacing:.38em;text-transform:uppercase;color:rgba(201,168,76,.65);margin-bottom:.6rem}
+.hero-title{
+  font-family:'Cinzel',serif;font-size:clamp(1.9rem,7.5vw,5.2rem);
+  font-weight:600;color:var(--cream);line-height:1;letter-spacing:.04em;
+}
+.hero-sub{
+  display:block;font-size:.38em;letter-spacing:.6em;
+  color:var(--gold);margin-top:.7rem;font-weight:400;
+}
+.hero-tagline{
+  font-style:italic;font-size:1.1rem;color:var(--fog);
+  margin:1.4rem 0 2.5rem;letter-spacing:.02em;
+}
+/* scroll hint */
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  color:rgba(201,168,76,.45);font-size:.68rem;letter-spacing:.25em;
+  text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:2;
+}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* HOME CARDS */
+.home-cards{display:grid;grid-template-columns:repeat(3,1fr);position:relative;z-index:1;flex:1}
+.hcard{
+  position:relative;min-height:320px;overflow:hidden;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:2rem;
+  border-top:1px solid rgba(201,168,76,.1);
+  border-right:1px solid rgba(201,168,76,.06);
+}
+.hcard:last-child{border-right:none}
+.hcard-bg{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  filter:brightness(.28) saturate(.55);transition:filter .6s,transform .6s;
+}
+.hcard:hover .hcard-bg{filter:brightness(.42) saturate(.8);transform:scale(1.06)}
+.hcard::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,8,4,.85) 0%,rgba(10,8,4,.3) 60%,transparent 100%);
+  pointer-events:none;z-index:0;
+}
+.hcard-bg-1{background-image:url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=900&q=75')}
+.hcard-bg-2{background-image:url('https://images.unsplash.com/photo-1511497584788-876760111969?w=900&q=75')}
+.hcard-bg-3{background-image:url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=900&q=75');background-position:center 60%}
+.hcard-content{position:relative;z-index:2}
+.hcard-icon{font-size:1.6rem;margin-bottom:.6rem;display:block}
+.hcard-title{font-family:'Cinzel',serif;font-size:.95rem;color:var(--cream);margin-bottom:.35rem;font-weight:400}
+.hcard-desc{font-size:.88rem;color:var(--fog);font-style:italic;line-height:1.6}
+.hcard-arrow{
+  display:inline-block;margin-top:1rem;font-size:.68rem;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+  transition:letter-spacing .3s;
+}
+.hcard:hover .hcard-arrow{letter-spacing:.32em}
+@media(max-width:640px){
+  .home-cards{grid-template-columns:1fr}
+  .hcard{min-height:180px;border-right:none}
+}
+
+/* ABOUT */
+.page-hero{
+  position:relative;min-height:52vh;overflow:hidden;
+  display:flex;align-items:flex-end;padding:4rem 3rem 3rem;
+}
+.page-hero-bg{
+  position:absolute;inset:0;background-size:cover;background-position:center 55%;
+  filter:brightness(.25) saturate(.5);
+}
+.page-hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,var(--cream) 0%,transparent 55%);
+}
+.page-hero-text{position:relative;z-index:1}
+.page-hero-text .heading{color:var(--cream);margin-bottom:0;font-size:clamp(2rem,5vw,3.4rem)}
+
+.about-body{max-width:900px;margin:0 auto;padding:3.5rem 2rem 5rem}
+.about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:4rem;align-items:start;margin-bottom:3.5rem}
+@media(max-width:640px){.about-grid{grid-template-columns:1fr;gap:2.5rem}}
+.about-grid p{font-size:1.05rem;line-height:1.95;color:var(--text);margin-bottom:1.2rem}
+.about-grid p em{color:var(--mush);font-style:italic}
+.about-photo-stack{position:relative;padding-bottom:2rem}
+.aphoto-main{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;filter:brightness(.8) saturate(.65)}
+.aphoto-accent{
+  position:absolute;bottom:0;right:-1.5rem;width:55%;
+  aspect-ratio:4/3;object-fit:cover;
+  border:3px solid var(--cream2);
+  filter:brightness(.82) saturate(.6);
+}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(139,94,60,.15);border:1px solid rgba(139,94,60,.15)}
+@media(max-width:560px){.values-grid{grid-template-columns:1fr}}
+.vcard{background:var(--cream);padding:2rem 1.6rem;transition:background .3s}
+.vcard:hover{background:var(--cream2)}
+.vcard-icon{font-size:1.8rem;margin-bottom:.7rem;display:block}
+.vcard h3{font-family:'Cinzel',serif;font-size:.75rem;color:var(--moss);letter-spacing:.1em;margin-bottom:.5rem;font-weight:600}
+.vcard p{font-size:.9rem;color:var(--text2);line-height:1.65;font-style:italic}
+
+/* MENU */
+.menu-page-bg{background-image:url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1800&q=80')!important;background-position:center 60%!important}
+.menu-body{max-width:940px;margin:0 auto;padding:3rem 1rem 5rem}
+.menu-tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border:1px solid rgba(139,94,60,.25);margin-bottom:2.5rem;
+  background:rgba(255,255,255,.5);width:100%;
+}
+.tab{
+  background:transparent;border:none;border-right:1px solid rgba(139,94,60,.2);
+  color:var(--text2);font-family:'Lora',serif;
+  font-size:clamp(.55rem,.65rem + .4vw,.75rem);
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:.75rem .25rem;cursor:pointer;transition:all .2s;
+  text-align:center;line-height:1.3;
+}
+.tab:last-child{border-right:none}
+.tab:hover{background:rgba(139,94,60,.07);color:var(--bark)}
+.tab.act{background:rgba(139,94,60,.12);color:var(--bark);font-weight:500}
+.menu-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));
+  gap:1px;background:rgba(139,94,60,.12);border:1px solid rgba(139,94,60,.15);
+}
+.mitem{background:var(--cream);padding:1.6rem;transition:background .2s}
+.mitem:hover{background:var(--cream2)}
+.mitem-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem}
+.iname{font-family:'Cinzel',serif;font-size:.8rem;color:var(--bark);font-weight:400}
+.iprice{font-size:.95rem;color:var(--moss);white-space:nowrap;margin-left:1rem}
+.idesc{font-size:.88rem;color:var(--text2);line-height:1.65;font-style:italic}
+.ibadge{
+  display:inline-block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--mush);border:1px solid rgba(139,94,60,.35);
+  padding:2px 7px;margin-bottom:.5rem;
+}
+
+/* HOURS */
+.hours-page-bg{background-image:url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=1800&q=80')!important;background-position:center 40%!important}
+.hours-page-bg::after{background:linear-gradient(to top,var(--cream) 0%,transparent 55%)!important}
+.hours-body{max-width:900px;margin:0 auto;padding:3.5rem 2rem 4rem}
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+@media(max-width:620px){.hours-grid{grid-template-columns:1fr;gap:2.5rem}}
+.htable{width:100%;border-collapse:collapse}
+.htable tr{border-bottom:1px solid rgba(139,94,60,.15)}
+.htable td{padding:.9rem 0;font-size:.98rem;color:var(--text2)}
+.htable td:last-child{text-align:right;color:var(--bark);font-weight:500}
+.loc-card{
+  background:var(--cream2);border:1px solid rgba(139,94,60,.18);
+  padding:2rem;
+}
+.loc-card h3{font-family:'Cinzel',serif;font-size:.82rem;color:var(--moss);letter-spacing:.06em;margin-bottom:1rem;font-weight:600}
+.loc-card p{font-size:1rem;color:var(--text2);line-height:2;font-style:italic}
+.photo-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:3.5rem}
+.strip-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:brightness(.6) saturate(.6);transition:filter .4s}
+.strip-img:hover{filter:brightness(.82) saturate(.82)}
+@media(max-width:560px){.photo-strip{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand" onclick="go('home')">The Pinecone</div>
+  <ul class="nav-links">
+    <li><button onclick="go('about')" id="nb-about">About</button></li>
+    <li><button onclick="go('menu')"  id="nb-menu">Menu</button></li>
+    <li><button onclick="go('hours')" id="nb-hours">Hours</button></li>
+  </ul>
+</nav>
+
+<!-- ===== HOME ===== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="fireflies" id="fflies"></div>
+    <div class="hero-content">
+      <div class="logo-wrap">
+        <div class="logo-ring2"></div>
+        <div class="logo-ring"></div>
+        <img class="logo-img" src="logo.jpg" alt="The Pinecone Coffee">
+      </div>
+      <p class="hero-eyebrow">Est. 2026 Puyallup, WA</p>
+      <h1 class="hero-title">The Pinecone<span class="hero-sub">Coffee</span></h1>
+      <p class="hero-tagline">A little magic in every cup</p>
+      <button class="btn btn-gold" onclick="go('menu')">See the Menu</button>
+    </div>
+    <span class="scroll-hint">scroll</span>
+  </div>
+
+  <div class="home-cards">
+    <div class="hcard" onclick="go('about')">
+      <div class="hcard-bg hcard-bg-1"></div>
+      <div class="hcard-content">
+        <span class="hcard-icon"></span>
+        <div class="hcard-title">Our Story</div>
+        <p class="hcard-desc">Where the trees meet your morning.</p>
+        <span class="hcard-arrow">Wander in†</span>
+      </div>
+    </div>
+    <div class="hcard" onclick="go('menu')">
+      <div class="hcard-bg hcard-bg-2"></div>
+      <div class="hcard-content">
+        <span class="hcard-icon"></span>
+        <div class="hcard-title">The Menu</div>
+        <p class="hcard-desc">Seasonal drinks, espresso & forest-inspired bites.</p>
+        <span class="hcard-arrow">Explore†</span>
+      </div>
+    </div>
+    <div class="hcard" onclick="go('hours')">
+      <div class="hcard-bg hcard-bg-3"></div>
+      <div class="hcard-content">
+        <span class="hcard-icon"></span>
+        <div class="hcard-title">Find Us</div>
+        <p class="hcard-desc">Tucked in the trees in Puyallup, WA.</p>
+        <span class="hcard-arrow">Come find us†</span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">The Pinecone Coffee</div>
+    <p>thepineconecoffee.com * Puyallup, WA * Est. 2026</p>
+  </footer>
+</div>
+
+<!-- ===== ABOUT ===== -->
+<div class="page" id="page-about">
+  <div class="page-hero" style="padding-top:80px">
+    <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1800&q=80')"></div>
+    <div class="page-hero-text">
+      <p class="eyebrow">Our Story</p>
+      <h1 class="heading">Where the forest<br>meets your cup</h1>
+    </div>
+  </div>
+
+  <div class="about-body">
+    <div class="about-grid">
+      <div>
+        <div class="divider"><span class="divider-icon"></span></div>
+        <p>The Pinecone started with a dream and a desire for something greater. We wanted to create a coffee stand that felt like stumbling into a fairy-tale clearing; somewhere warm, unhurried, and a little bit magical.</p>
+        <p>Our beans come from local businesses and are roasted to bring out every earthy, wild note the Pacific Northwest has to offer. <em>We believe the best mornings are slow ones, shared over something delicious.</em></p>
+        <p>We're your neighbors, your forest friends, and your daily ritual. Come as you are...the mushrooms and ferns don't judge.</p>
+      </div>
+      <div class="about-photo-stack">
+        <img class="aphoto-main" src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=700&q=80" alt="Forest ferns" onerror="this.style.display='none'">
+        <img class="aphoto-accent" src="https://images.unsplash.com/photo-1568584711271-6bf7b88dd33e?w=500&q=80" alt="Coffee pour" onerror="this.style.display='none'">
+      </div>
+    </div>
+
+    <div class="divider"><span class="divider-icon"></span></div>
+
+    <div class="values-grid">
+      <div class="vcard">
+        <span class="vcard-icon"></span>
+        <h3>Sustainably Sourced</h3>
+        <p>Every bean chosen with care, from local businesses that love the land as much as we do.</p>
+      </div>
+      <div class="vcard">
+        <span class="vcard-icon"></span>
+        <h3>Forest Rooted</h3>
+        <p>Proudly Puyallup. Rainier is always in our hearts and we're part of this place.</p>
+      </div>
+      <div class="vcard">
+        <span class="vcard-icon"></span>
+        <h3>Seasonally Inspired</h3>
+        <p>Our specials follow the forest's rhythm wild, slow, and always changing.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">The Pinecone Coffee</div>
+    <p>thepineconecoffee.com * Puyallup, WA * Est. 2026</p>
+  </footer>
+</div>
+
+<!-- ===== MENU ===== -->
+<div class="page" id="page-menu">
+  <div class="page-hero" style="padding-top:80px">
+    <div class="page-hero-bg menu-page-bg"></div>
+    <div class="page-hero-text">
+      <p class="eyebrow">What we're brewing</p>
+      <h1 class="heading">The Menu</h1>
+    </div>
+  </div>
+
+  <div class="menu-body">
+    <div class="menu-tabs">
+      <button class="tab act" onclick="showCat('espresso',this)">Espresso/Drip</button>
+      <button class="tab" onclick="showCat('drip',this)">Signature/Cold</button>
+      <button class="tab" onclick="showCat('seasonal',this)">Seasonal</button>
+      <button class="tab" onclick="showCat('bites',this)">Bites</button>
+    </div>
+    <div class="menu-grid" id="mgrid"></div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">The Pinecone Coffee</div>
+    <p>thepineconecoffee.com * Puyallup, WA * Est. 2026</p>
+  </footer>
+</div>
+
+<!-- ===== HOURS ===== -->
+<div class="page" id="page-hours">
+  <div class="page-hero" style="padding-top:80px">
+    <div class="page-hero-bg hours-page-bg"></div>
+    <div class="page-hero-text">
+      <p class="eyebrow">Come find us</p>
+      <h1 class="heading">Hours &amp; Location</h1>
+    </div>
+  </div>
+
+  <div class="hours-body">
+    <div class="divider"><span class="divider-icon">We'd Love To Hear From You!</span></div>
+    <div class="hours-grid">
+      <div>
+        <p class="eyebrow" style="margin-bottom:1rem">When to visit</p>
+        <table class="htable">
+          <tr><td>Monday - Friday</td><td>8:00 am - 4:00 pm</td></tr>
+          <tr><td>Saturday</td><td>10:00 am - 3:00 pm</td></tr>
+          <tr><td>Sunday</td><td>10:00 am - 3:00 pm</td></tr>
+        </table>
+      </div>
+      <div>
+        <p class="eyebrow" style="margin-bottom:1rem">Where to find us</p>
+        <div class="loc-card">
+          <h3>The Pinecone Coffee</h3>
+          <p>123 Timberline Road<br>Puyallup, WA 98371<br><br>Look for the magical pinecone sign...we're tucked in the trees, waiting.</p>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div><!-- end hours-body -->
+
+  <footer class="site-footer">
+    <div class="footer-brand">The Pinecone Coffee</div>
+    <p>thepineconecoffee.com * Puyallup, WA * Est. 2026</p>
+  </footer>
+</div>
+
+<script>
+// Fireflies
+const ff=document.getElementById('fflies');
+for(let i=0;i<40;i++){
+  const s=document.createElement('div');
+  s.className='ff';
+  s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${5+Math.random()*10}s;--del:${Math.random()*8}s;--dx:${-30+Math.random()*60}px;--dy:${-60+Math.random()*30}px;width:${Math.random()<.3?4:3}px;height:${Math.random()<.3?4:3}px`;
+  ff.appendChild(s);
+}
+
+// Routing
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('act'));
+  const nb=document.getElementById('nb-'+id);
+  if(nb)nb.classList.add('act');
+  window.scrollTo(0,0);
+}
+
+// Menu data
+const menu={
+  espresso:[
+    {n:'Espresso',p:'$3.50',d:'Single or Double shot, slow-pulled and full-bodied.'},
+    {n:'Cortado',p:'$4.25',d:'Equal parts espresso and velvety steamed milk.'},
+    {n:'Latte',p:'$5.00',d:'Double shot, microfoamed, your milk of choice.'},
+    {n:'Cappuccino',p:'$4.75',d:'Bold espresso crowned with thick airy foam.'},
+    {n:'Americano',p:'$3.75',d:'Honest and strong, espresso meets hot water.'},
+    {n:'Flat White',p:'$5.25',d:'Ristretto shots, short and rich.'},
+  ],
+  drip:[
+    {n:'Pour Over',p:'$4.50',d:'Single origin, brewed to order, florally bright.'},
+    {n:'Drip Coffee',p:'$3.00',d:'House blend warm and reliable all day.'},
+    {n:'Cold Brew',p:'$5.50',d:'Steeped 20 hours. Smooth, bold, never bitter.'},
+    {n:'Iced Latte',p:'$5.50',d:'Espresso over ice, finished with your milk.'},
+  ],
+  seasonal:[
+    {n:'Pinecone Latte',p:'$6.25',d:'Brown butter, toasted hazelnut & a whisper of spruce.'},
+    {n:'Fireside Mocha',p:'$6.00',d:'Dark chocolate, smoked vanilla, oat milk.'},
+    {n:'Maple Mist',p:'$5.75',d:'Espresso, real maple syrup, cinnamon foam.'},
+    {n:'Forest Fog',p:'$5.50',d:'Earl Grey, lavender honey, oat milk (*NC).'},
+    {n:'Mushroom Latte',p:'$6.50',d:'Lion\'s mane, oat milk, honey, a hint of cardamom.',badge:'New'},
+    {n:'Grounded in Nature',p:'$6.50',d:'english Breakfast, oat milk, cinnamon, honey.',badge:'New'},
+  ],
+  bites:[
+    {n:'Butter Croissant',p:'$3.75',d:'Flaky, golden, baked fresh each morning.'},
+    {n:'Almond Scone',p:'$4.00',d:'Dense, crumbly, glazed with toasted almond.'},
+    {n:'Banana Bread',p:'$3.50',d:'A thick slice — moist, spiced, satisfying.'},
+    {n:'Everything Bagel',p:'$4.25',d:'With cream cheese. Simple done right.'},
+  ],
+};
+
+function showCat(k,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  render(k);
+}
+function render(k){
+  document.getElementById('mgrid').innerHTML=menu[k].map(i=>`
+    <div class="mitem">
+      ${i.badge?`<div class="ibadge">${i.badge}</div>`:''}
+      <div class="mitem-top">
+        <span class="iname">${i.n}</span>
+        <span class="iprice">${i.p}</span>
+      </div>
+      <p class="idesc">${i.d}</p>
+    </div>`).join('');
+}
+render('espresso');
+</script>
+</body>
+</html>
