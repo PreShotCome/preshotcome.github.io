@@ -1,0 +1,59 @@
+# .github/ISSUE_TEMPLATE/1_add_domain.yml
+name: "Add Domain"
+description: "Request to add a domain to the blocklist or allowlist."
+title: "[Add Domain]: <domain name>"
+labels: ["add domain"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before requesting the addition of a domain, please review our [inclusion criteria](https://github.com/Bon-Appetit/porn-domains/blob/main/docs/POLICY.md#-criteria-for-inclusion-block-criteria) and [contributing guidelines](https://github.com/Bon-Appetit/porn-domains/blob/main/docs/CONTRIBUTING.md). Use the [Domain Search Tool](https://bon-appetit.github.io/domain-search/) to check if the domain is already listed.
+
+  - type: input
+    id: domain_name
+    attributes:
+      label: "Domain Name"
+      description: "Please enter the domain you want to add."
+      placeholder: "example.com"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: list_type
+    attributes:
+      label: "List Type"
+      description: "Please select whether this domain should be blocked or allowed."
+      options:
+        - "Blocklist (block this domain)"
+        - "Allowlist (explicitly allow this domain)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reason
+    attributes:
+      label: "Reason"
+      description: "Please select the reason for adding this domain."
+      options:
+        - "Block: Pornographic Content"
+        - "Block: Cam Site / Live Streams"
+        - "Block: Adult Dating / Escort Services"
+        - "Block: Ads / Redirects to Adult Content"
+        - "Block: Misleading / Deceptive Adult Site"
+        - "Block: Revenge Porn / Non-Consensual Content"
+        - "Allow: False Positive (Not Adult Content)"
+        - "Allow: Legitimate Site Blocked"
+        - "Allow: Educational / Medical Use"
+        - "Other (Specify in Additional Information)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: remarks
+    attributes:
+      label: "Additional Information / Evidence"
+      description: "Please provide extra details, links, or screenshots supporting your request."
+      placeholder: "E.g., screenshots, references, or specific URLs."
+    validations:
+      required: false

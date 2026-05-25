@@ -1,0 +1,68 @@
+# .github/ISSUE_TEMPLATE/5-bulk_domain_report.yml
+name: "Bulk Add/Remove Domains"
+description: "Report multiple domains to be added to or removed from the blocklist."
+title: "[Bulk Domain Report]: <add/remove> <number of domains> domains"
+labels: ["bulk domain report"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to report multiple domains for addition to or removal from the blocklist or allowlist. Before submitting, please review our [policy](https://github.com/Bon-Appetit/porn-domains/blob/main/docs/POLICY.md) and [contributing guidelines](https://github.com/Bon-Appetit/porn-domains/blob/main/docs/CONTRIBUTING.md). Use the [Domain Search Tool](https://bon-appetit.github.io/domain-search/) to check the domains to avoid duplicates or errors.
+
+  - type: dropdown
+    id: action
+    attributes:
+      label: "Action"
+      description: "Do you want to add or remove these domains?"
+      options:
+        - "Add to blocklist"
+        - "Add to allowlist"
+        - "Remove from blocklist"
+        - "Remove from allowlist"
+    validations:
+      required: true
+
+  - type: textarea
+    id: domains
+    attributes:
+      label: "Domains"
+      description: "List the domains you want to add or remove. One domain per line."
+      placeholder: |
+        example1.com
+        example2.net
+        example3.org
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reason
+    attributes:
+      label: "Reason"
+      description: "Please select the main reason for this bulk action."
+      options:
+        - "Block: Pornographic Content"
+        - "Block: Cam Site / Live Streams"
+        - "Block: Adult Dating / Escort Services"
+        - "Block: Ads / Redirects to Adult Content"
+        - "Block: Misleading / Deceptive Adult Site"
+        - "Block: Revenge Porn / Non-Consensual Content"
+        - "Allow: False Positive (Not Adult Content)"
+        - "Allow: Legitimate Site Blocked"
+        - "Allow: Educational / Medical Use"
+        - "Remove: False Positive (Not Adult Content)"
+        - "Remove: Legitimate Site"
+        - "Remove: Educational / Medical Use"
+        - "Remove: No Longer Meets Criteria"
+        - "Other (Specify in Additional Information)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: remarks
+    attributes:
+      label: "Additional Information / Evidence"
+      description: "Provide extra details, links, or screenshots supporting your request."
+      placeholder: "E.g., source, explanation, links, or screenshots."
+    validations:
+      required: false
