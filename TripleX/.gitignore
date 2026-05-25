@@ -1,0 +1,42 @@
+# Ignore system files
+.DS_Store
+
+# Ignore IDE/editor config directories
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore virtual environment directories
+venv/
+env/
+ENV/
+.virtualenv/
+.venv/
+
+# Ignore data directories
+data/
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore models files
+models/
+
+# Ignore environment variables
+.env
+
+# Ignore downloaded Reddit data
+/reddit_data
+
+# Ignore Google Cloud Account Keys
+gen-lang-client-*
