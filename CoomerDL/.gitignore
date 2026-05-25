@@ -1,0 +1,46 @@
+# Virtual environment directories
+myenv/
+venv/
+.venv/
+
+# Python cache and compiled files
+*.py[cod]
+*.pyc
+__pycache__/
+
+# Python distribution artifacts
+*.egg-info/
+build/
+dist/
+Scripts/
+
+# Test caches
+.pytest_cache/
+
+# IDE/editor configuration files
+.idea/
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Sensitive configuration files
+.env
+
+# Other files to ignore
+*.csv
+*.log
+coomer.py
+descargas_test/
+list.txt
+resources/config/logs/*
+setup.py
+test/
+test.py
+test/parse.py
+app/user_panel.py
+resources/config/download_path/download_folder.json
+CLI/
+resources/config/downloads.db
+resources/config/cookies/*
